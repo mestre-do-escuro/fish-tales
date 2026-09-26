@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) { cursor: pointer; }
+
+  html, body {
+    margin: 0;
+    min-height: 100%;
+    background: #06151d;
+    color: #edf7ff;
+  }
+}
+
+.peixe-boot {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: #06151d;
+  color: #8fb1c6;
+  font-family: system-ui, sans-serif;
+}

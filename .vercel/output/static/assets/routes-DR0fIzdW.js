@@ -1,0 +1,1 @@
+import{n as e,r as t,t as n}from"./index-KY8g-wiz.js";var r=t(e()),i=n();function a(){return(0,r.useEffect)(()=>{window.location.replace(`/peixe.html`)},[]),(0,i.jsx)(`main`,{className:`peixe-boot`,children:(0,i.jsx)(`p`,{children:`PeixeLisboa`})})}export{a as component};

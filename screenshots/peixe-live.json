@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/peixe.html",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "PeixeLisboa App",
+      "hasCanvas": true,
+      "bodyTextLen": 588,
+      "bodyTextHash": "604e5dbc82adee32f6cbbef0c1e5542d5e15ecb0018815aa9b16e4bcee4570ef",
+      "bodyTextPrefix": "PeixeLisboa EXPLORE · PESCA · VIVE O MAR Cascais Parque das Naçõ",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/peixe-live.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "PeixeLisboa App",
+      "hasCanvas": true,
+      "bodyTextLen": 542,
+      "bodyTextHash": "69ca18ae2a20fe5a814a9a125d5379bef95e8bc8a7d7f66ea647756bb3c8a414",
+      "bodyTextPrefix": "PeixeLisboa Cascais Parque das Nações Sintra Almada Oeiras Casca",
+      "horizontalOverflow": true,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/peixe-live-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/peixe-live.json"
+}
