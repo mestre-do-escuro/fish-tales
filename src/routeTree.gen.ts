@@ -10,33 +10,80 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminSpotsRouteImport } from './routes/admin/spots'
+import { Route as ApiSpotsRouteImport } from './routes/api/spots'
+import { Route as ApiImagesKindIdRouteImport } from './routes/api/images/$kind/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSpotsRoute = AdminSpotsRouteImport.update({
+  id: '/admin/spots',
+  path: '/admin/spots',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSpotsRoute = ApiSpotsRouteImport.update({
+  id: '/api/spots',
+  path: '/api/spots',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiImagesKindIdRoute = ApiImagesKindIdRouteImport.update({
+  id: '/api/images/$kind/$id',
+  path: '/api/images/$kind/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin/spots': typeof AdminSpotsRoute
+  '/api/spots': typeof ApiSpotsRoute
+  '/admin/': typeof AdminIndexRoute
+  '/api/images/$kind/$id': typeof ApiImagesKindIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin/spots': typeof AdminSpotsRoute
+  '/api/spots': typeof ApiSpotsRoute
+  '/admin': typeof AdminIndexRoute
+  '/api/images/$kind/$id': typeof ApiImagesKindIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin/spots': typeof AdminSpotsRoute
+  '/api/spots': typeof ApiSpotsRoute
+  '/admin/': typeof AdminIndexRoute
+  '/api/images/$kind/$id': typeof ApiImagesKindIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    '/' | '/admin/spots' | '/api/spots' | '/admin/' | '/api/images/$kind/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/admin/spots' | '/api/spots' | '/admin' | '/api/images/$kind/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin/spots'
+    | '/api/spots'
+    | '/admin/'
+    | '/api/images/$kind/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminSpotsRoute: typeof AdminSpotsRoute
+  ApiSpotsRoute: typeof ApiSpotsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  ApiImagesKindIdRoute: typeof ApiImagesKindIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +95,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/spots': {
+      id: '/admin/spots'
+      path: '/admin/spots'
+      fullPath: '/admin/spots'
+      preLoaderRoute: typeof AdminSpotsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/spots': {
+      id: '/api/spots'
+      path: '/api/spots'
+      fullPath: '/api/spots'
+      preLoaderRoute: typeof ApiSpotsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/images/$kind/$id': {
+      id: '/api/images/$kind/$id'
+      path: '/api/images/$kind/$id'
+      fullPath: '/api/images/$kind/$id'
+      preLoaderRoute: typeof ApiImagesKindIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminSpotsRoute: AdminSpotsRoute,
+  ApiSpotsRoute: ApiSpotsRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  ApiImagesKindIdRoute: ApiImagesKindIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

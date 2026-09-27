@@ -1,10 +1,76 @@
-import { i as __toESM } from "../_runtime.mjs";
-import { K as require_react, _ as createFileRoute, b as require_jsx_runtime, d as Scripts, f as HeadContent, g as lazyRouteComponent, h as Outlet, m as createRouter, v as createRootRoute, y as useRouter } from "../_libs/@tanstack/react-router+[...].mjs";
-import { t as TriangleAlert } from "../_libs/lucide-react.mjs";
-import { a as union, i as string, n as number, r as object, t as literal } from "../_libs/zod.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-DhWSVSak.js
+import { o as __toESM } from "../_runtime.mjs";
+import { n as MAX_IMAGE_BYTES, o as loadImage, r as SPOT_PROFILES, s as loadRegions, t as IMAGE_TYPES } from "./spots-CGM4tP9h.mjs";
+import { n as require_react } from "../_libs/@radix-ui/react-compose-refs+[...].mjs";
+import { _ as createFileRoute, b as useRouter, d as Scripts, f as HeadContent, g as lazyRouteComponent, h as Outlet, m as createRouter, v as createRootRoute } from "../_libs/@tanstack/react-router+[...].mjs";
+import { n as require_jsx_runtime } from "../_libs/radix-ui__react-context+react.mjs";
+import { n as TSS_SERVER_FUNCTION, r as getServerFnById, t as createServerFn } from "./ssr.mjs";
+import { a as string, i as object, n as literal, o as union, r as number, t as _enum } from "../_libs/zod.mjs";
+import { n as TriangleAlert } from "../_libs/lucide-react.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/spots.functions-zFayMkq1.js
+var createSsrRpc = (functionId) => {
+	const url = "/_serverFn/" + functionId;
+	const serverFnMeta = { id: functionId };
+	const fn = async (...args) => {
+		return (await getServerFnById(functionId, { origin: "server" }))(...args);
+	};
+	return Object.assign(fn, {
+		url,
+		serverFnMeta,
+		[TSS_SERVER_FUNCTION]: true
+	});
+};
+var name = string().trim().min(1, "O nome é obrigatório.").max(60, "O nome pode ter no máximo 60 caracteres.");
+var id = number().int().positive();
+var focus = number().int().min(0).max(100);
+var image = object({
+	data: string().max(Math.ceil(MAX_IMAGE_BYTES * 4 / 3) + 4, "A imagem é demasiado grande (máx. 2,5 MB).").regex(/^[A-Za-z0-9+/]+={0,2}$/, "Imagem inválida."),
+	type: _enum(IMAGE_TYPES)
+});
+/** Check the decoded bytes really are the claimed JPEG/PNG/WebP. */
+/** Turn unique-constraint violations into a readable message. */
+var listRegions = createServerFn({ method: "GET" }).handler(createSsrRpc("09d2b0c14d4b272327a53298f3ea2ff6aba934d9d62a1b70e649823096de2b1d"));
+var createRegion = createServerFn({ method: "POST" }).validator(object({
+	name,
+	focus: focus.default(50),
+	image: image.nullish()
+})).handler(createSsrRpc("c697ae02b45f38a031c03ffdf716b0c78825c70f27735c31037534a7572d418b"));
+var updateRegion = createServerFn({ method: "POST" }).validator(object({
+	id,
+	name,
+	focus,
+	image: image.nullable().optional()
+})).handler(createSsrRpc("5f0c38a840b8995c1de0fd0b1a8b61628c0b8814aa24a404913a37f99e936953"));
+var deleteRegion = createServerFn({ method: "POST" }).validator(object({ id })).handler(createSsrRpc("e72b2678f42001b54ab8009c05e416647e739321ffde254d94b0794bb919d5a7"));
+var spotFields = {
+	regionId: id,
+	name,
+	profile: number().int().min(0).max(SPOT_PROFILES.length - 1),
+	focus
+};
+var createSpot = createServerFn({ method: "POST" }).validator(object({
+	...spotFields,
+	image: image.nullish()
+})).handler(createSsrRpc("862de7cafa5915e0a86e741116fb6fdc9349517a08c59b11a11d82fd32bb9000"));
+var updateSpot = createServerFn({ method: "POST" }).validator(object({
+	id,
+	...spotFields,
+	image: image.nullable().optional()
+})).handler(createSsrRpc("b1fbb56aec5b4fcfe96a9db4934028a249c34f84a7d687516bbd62f101092ace"));
+var deleteSpot = createServerFn({ method: "POST" }).validator(object({ id })).handler(createSsrRpc("08a651e6059cfa5e59ae04fddb4528a1df22a4ca18d2341199298df1ec18d396"));
+//#endregion
+//#region node_modules/.nitro/vite/services/ssr/assets/router-BEVyCXtN.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
+var __defProp = Object.defineProperty;
+var __exportAll = (all, no_symbols) => {
+	let target = {};
+	for (var name in all) __defProp(target, name, {
+		get: all[name],
+		enumerable: true
+	});
+	if (!no_symbols) __defProp(target, Symbol.toStringTag, { value: "Module" });
+	return target;
+};
 var FALLBACK_MESSAGE = "An unexpected error occurred. Try reloading the page.";
 function errorMessage(error) {
 	if (error instanceof Error && error.message) return error.message;
@@ -296,9 +362,9 @@ function PreviewHostBridge() {
 	}, [router]);
 	return null;
 }
-var styles_default = "/assets/styles-4v80vyAj.css";
-var APP_NAME = "PeixeLisboa";
-var Route$1 = createRootRoute({
+var styles_default = "/assets/styles-CuMpgeDi.css";
+var APP_NAME = "O Pescador";
+var Route$5 = createRootRoute({
 	head: () => ({
 		meta: [
 			{ charSet: "utf-8" },
@@ -317,6 +383,31 @@ var Route$1 = createRootRoute({
 				rel: "icon",
 				type: "image/svg+xml",
 				href: "/favicon.svg"
+			},
+			{
+				rel: "icon",
+				type: "image/png",
+				sizes: "192x192",
+				href: "/icon-192.png"
+			},
+			{
+				rel: "icon",
+				type: "image/png",
+				sizes: "512x512",
+				href: "/icon-512.png"
+			},
+			{
+				rel: "preconnect",
+				href: "https://fonts.googleapis.com"
+			},
+			{
+				rel: "preconnect",
+				href: "https://fonts.gstatic.com",
+				crossOrigin: "anonymous"
+			},
+			{
+				rel: "stylesheet",
+				href: "https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,600&display=swap"
 			},
 			{
 				rel: "stylesheet",
@@ -342,13 +433,66 @@ var Route$1 = createRootRoute({
 		] })]
 	})
 });
-var $$splitComponentImporter = () => import("./routes-NJhubooh.mjs");
-var rootRouteChildren = { IndexRoute: createFileRoute("/")({ component: lazyRouteComponent($$splitComponentImporter, "component") }).update({
+var $$splitComponentImporter$2 = () => import("./routes-Z__wuDUy.mjs");
+var Route$4 = createFileRoute("/")({ component: lazyRouteComponent($$splitComponentImporter$2, "component") });
+var $$splitComponentImporter$1 = () => import("./admin-Bnf0D16M.mjs");
+var Route$3 = createFileRoute("/admin/")({
+	loader: () => listRegions(),
+	head: () => ({ meta: [{ title: "Backoffice · O Pescador" }] }),
+	component: lazyRouteComponent($$splitComponentImporter$1, "component")
+});
+var $$splitComponentImporter = () => import("./spots-Dd_Lkthx.mjs");
+var Route$2 = createFileRoute("/admin/spots")({
+	loader: () => listRegions(),
+	head: () => ({ meta: [{ title: "Spots e regiões · O Pescador" }] }),
+	component: lazyRouteComponent($$splitComponentImporter, "component")
+});
+var Route$1 = createFileRoute("/api/spots")({ server: { handlers: { GET: async () => {
+	const regions = await loadRegions();
+	return Response.json({ regions }, { headers: { "Cache-Control": "no-store" } });
+} } } });
+var Route = createFileRoute("/api/images/$kind/$id")({ server: { handlers: { GET: async ({ params }) => {
+	const kind = params.kind;
+	const id = Number(params.id);
+	if (kind !== "region" && kind !== "spot" || !Number.isInteger(id) || id < 1) return new Response("Not found", { status: 404 });
+	const image = await loadImage(kind, id);
+	if (!image) return new Response("Not found", { status: 404 });
+	return new Response(Buffer.from(image.data, "base64"), { headers: {
+		"Content-Type": image.type,
+		"Cache-Control": "public, max-age=31536000, immutable"
+	} });
+} } } });
+var IndexRoute = Route$4.update({
 	id: "/",
 	path: "/",
-	getParentRoute: () => Route$1
-}) };
-var routeTree = Route$1._addFileChildren(rootRouteChildren)._addFileTypes();
+	getParentRoute: () => Route$5
+});
+var AdminIndexRoute = Route$3.update({
+	id: "/admin/",
+	path: "/admin/",
+	getParentRoute: () => Route$5
+});
+var rootRouteChildren = {
+	IndexRoute,
+	AdminSpotsRoute: Route$2.update({
+		id: "/admin/spots",
+		path: "/admin/spots",
+		getParentRoute: () => Route$5
+	}),
+	ApiSpotsRoute: Route$1.update({
+		id: "/api/spots",
+		path: "/api/spots",
+		getParentRoute: () => Route$5
+	}),
+	AdminIndexRoute,
+	ApiImagesKindIdRoute: Route.update({
+		id: "/api/images/$kind/$id",
+		path: "/api/images/$kind/$id",
+		getParentRoute: () => Route$5
+	})
+};
+var routeTree = Route$5._addFileChildren(rootRouteChildren)._addFileTypes();
+var router_exports = /* @__PURE__ */ __exportAll({ getRouter: () => getRouter });
 function getRouter() {
 	return createRouter({
 		routeTree,
@@ -356,4 +500,4 @@ function getRouter() {
 	});
 }
 //#endregion
-export { getRouter };
+export { createSpot as a, updateRegion as c, createRegion as i, updateSpot as l, Route$2 as n, deleteRegion as o, Route$3 as r, deleteSpot as s, router_exports as t };

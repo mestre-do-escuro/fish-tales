@@ -1,0 +1,1 @@
+import{i as e,n as t,t as n}from"./jsx-runtime-Dk72oS4N.js";var r=e(t()),i=n();function a(){return(0,r.useEffect)(()=>{window.location.replace(`/peixe.html`+window.location.hash)},[]),(0,i.jsx)(`main`,{className:`peixe-boot`,children:(0,i.jsx)(`p`,{children:`O Pescador`})})}export{a as component};
