@@ -10,9 +10,16 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminAccessRouteImport } from './routes/admin/access'
+import { Route as AdminPescaRouteImport } from './routes/admin/pesca'
 import { Route as AdminSpotsRouteImport } from './routes/admin/spots'
+import { Route as AdminUsersRouteImport } from './routes/admin/users'
+import { Route as ApiMeRouteImport } from './routes/api/me'
 import { Route as ApiSpotsRouteImport } from './routes/api/spots'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiImagesKindIdRouteImport } from './routes/api/images/$kind/$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -20,19 +27,54 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminAccessRoute = AdminAccessRouteImport.update({
+  id: '/access',
+  path: '/access',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminPescaRoute = AdminPescaRouteImport.update({
+  id: '/pesca',
+  path: '/pesca',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminSpotsRoute = AdminSpotsRouteImport.update({
-  id: '/admin/spots',
-  path: '/admin/spots',
+  id: '/spots',
+  path: '/spots',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const ApiMeRoute = ApiMeRouteImport.update({
+  id: '/api/me',
+  path: '/api/me',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiSpotsRoute = ApiSpotsRouteImport.update({
   id: '/api/spots',
   path: '/api/spots',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiImagesKindIdRoute = ApiImagesKindIdRouteImport.update({
@@ -43,46 +85,97 @@ const ApiImagesKindIdRoute = ApiImagesKindIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
+  '/login': typeof LoginRoute
+  '/admin/access': typeof AdminAccessRoute
+  '/admin/pesca': typeof AdminPescaRoute
   '/admin/spots': typeof AdminSpotsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/api/me': typeof ApiMeRoute
   '/api/spots': typeof ApiSpotsRoute
   '/admin/': typeof AdminIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/images/$kind/$id': typeof ApiImagesKindIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/admin/access': typeof AdminAccessRoute
+  '/admin/pesca': typeof AdminPescaRoute
   '/admin/spots': typeof AdminSpotsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/api/me': typeof ApiMeRoute
   '/api/spots': typeof ApiSpotsRoute
   '/admin': typeof AdminIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/images/$kind/$id': typeof ApiImagesKindIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
+  '/login': typeof LoginRoute
+  '/admin/access': typeof AdminAccessRoute
+  '/admin/pesca': typeof AdminPescaRoute
   '/admin/spots': typeof AdminSpotsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/api/me': typeof ApiMeRoute
   '/api/spots': typeof ApiSpotsRoute
   '/admin/': typeof AdminIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/images/$kind/$id': typeof ApiImagesKindIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/admin/spots' | '/api/spots' | '/admin/' | '/api/images/$kind/$id'
+    | '/'
+    | '/admin'
+    | '/login'
+    | '/admin/access'
+    | '/admin/pesca'
+    | '/admin/spots'
+    | '/admin/users'
+    | '/api/me'
+    | '/api/spots'
+    | '/admin/'
+    | '/api/auth/$'
+    | '/api/images/$kind/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin/spots' | '/api/spots' | '/admin' | '/api/images/$kind/$id'
+  to:
+    | '/'
+    | '/login'
+    | '/admin/access'
+    | '/admin/pesca'
+    | '/admin/spots'
+    | '/admin/users'
+    | '/api/me'
+    | '/api/spots'
+    | '/admin'
+    | '/api/auth/$'
+    | '/api/images/$kind/$id'
   id:
     | '__root__'
     | '/'
+    | '/admin'
+    | '/login'
+    | '/admin/access'
+    | '/admin/pesca'
     | '/admin/spots'
+    | '/admin/users'
+    | '/api/me'
     | '/api/spots'
     | '/admin/'
+    | '/api/auth/$'
     | '/api/images/$kind/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminSpotsRoute: typeof AdminSpotsRoute
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  ApiMeRoute: typeof ApiMeRoute
   ApiSpotsRoute: typeof ApiSpotsRoute
-  AdminIndexRoute: typeof AdminIndexRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiImagesKindIdRoute: typeof ApiImagesKindIdRoute
 }
 
@@ -95,18 +188,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/': {
       id: '/admin/'
-      path: '/admin'
+      path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/access': {
+      id: '/admin/access'
+      path: '/access'
+      fullPath: '/admin/access'
+      preLoaderRoute: typeof AdminAccessRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/pesca': {
+      id: '/admin/pesca'
+      path: '/pesca'
+      fullPath: '/admin/pesca'
+      preLoaderRoute: typeof AdminPescaRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/spots': {
       id: '/admin/spots'
-      path: '/admin/spots'
+      path: '/spots'
       fullPath: '/admin/spots'
       preLoaderRoute: typeof AdminSpotsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/api/me': {
+      id: '/api/me'
+      path: '/api/me'
+      fullPath: '/api/me'
+      preLoaderRoute: typeof ApiMeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/spots': {
@@ -114,6 +249,13 @@ declare module '@tanstack/react-router' {
       path: '/api/spots'
       fullPath: '/api/spots'
       preLoaderRoute: typeof ApiSpotsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/images/$kind/$id': {
@@ -126,11 +268,33 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteRouteChildren {
+  AdminAccessRoute: typeof AdminAccessRoute
+  AdminPescaRoute: typeof AdminPescaRoute
+  AdminSpotsRoute: typeof AdminSpotsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminAccessRoute: AdminAccessRoute,
+  AdminPescaRoute: AdminPescaRoute,
+  AdminSpotsRoute: AdminSpotsRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminSpotsRoute: AdminSpotsRoute,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
+  LoginRoute: LoginRoute,
+  ApiMeRoute: ApiMeRoute,
   ApiSpotsRoute: ApiSpotsRoute,
-  AdminIndexRoute: AdminIndexRoute,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiImagesKindIdRoute: ApiImagesKindIdRoute,
 }
 export const routeTree = rootRouteImport

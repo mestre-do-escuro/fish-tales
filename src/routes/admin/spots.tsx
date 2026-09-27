@@ -2,8 +2,10 @@ import { useId, useRef, useState, type ReactNode } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import * as Dialog from "@radix-ui/react-dialog";
 import { ImagePlus, MapPin, Monitor, Pencil, Plus, Smartphone, Trash2, X } from "lucide-react";
-import { Toaster, toast } from "sonner";
+import { toast } from "sonner";
 import { AdminShell } from "@/components/admin/admin-shell";
+import { errorMessage } from "@/components/admin/error-message";
+import { ConfirmBar, Field, GhostButton, PrimaryButton } from "@/components/admin/ui";
 import { resizeImage, type ResizedImage } from "@/lib/resize-image";
 import { SPOT_PROFILES, imageUrl, type RegionRow, type SpotRow } from "@/lib/spots";
 import {
@@ -55,10 +57,6 @@ const SOURCE_LABEL: Record<ShownImage["source"], string> = {
   default: "Imagem padrão",
 };
 
-function errorMessage(err: unknown) {
-  return err instanceof Error ? err.message : "Ocorreu um erro. Tente novamente.";
-}
-
 function SpotsAdmin() {
   const [regions, setRegions] = useState<RegionRow[]>(Route.useLoaderData());
   const [editor, setEditor] = useState<Editor | null>(null);
@@ -90,7 +88,6 @@ function SpotsAdmin() {
         </PrimaryButton>
       }
     >
-      <Toaster theme="dark" position="top-center" richColors />
       <div className="space-y-10">
         {regions.length === 0 && (
           <p className="rounded-2xl border border-dashed border-line p-8 text-center text-muted">
@@ -228,67 +225,6 @@ function ScenePreview({ image, className = "" }: { image: ShownImage; className?
     >
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgb(4_16_34/0.7)_0%,rgb(8_26_48/0.35)_45%,rgb(10_40_60/0.15)_100%)]" />
     </div>
-  );
-}
-
-function ConfirmBar({
-  text,
-  busy,
-  onCancel,
-  onConfirm,
-}: {
-  text: string;
-  busy: boolean;
-  onCancel: () => void;
-  onConfirm: () => void;
-}) {
-  return (
-    <div role="alert" className="flex flex-wrap items-center gap-2 rounded-xl border border-danger/40 bg-danger/10 p-2 pl-3">
-      <span className="mr-auto text-sm font-medium">{text}</span>
-      <GhostButton onClick={onCancel} disabled={busy}>
-        Cancelar
-      </GhostButton>
-      <button
-        type="button"
-        onClick={onConfirm}
-        disabled={busy}
-        className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-danger px-4 text-sm font-semibold text-primary-fg disabled:opacity-60"
-      >
-        <Trash2 className="size-4" aria-hidden /> Apagar
-      </button>
-    </div>
-  );
-}
-
-function PrimaryButton({ children, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  return (
-    <button
-      type="button"
-      {...props}
-      className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-fg shadow-[0_0_20px_rgb(40_185_255/0.3)] transition-opacity hover:opacity-90 disabled:opacity-60"
-    >
-      {children}
-    </button>
-  );
-}
-
-function GhostButton({
-  children,
-  tone,
-  ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & { tone?: "danger" }) {
-  const toneClass =
-    tone === "danger"
-      ? "hover:border-danger/60 hover:text-danger"
-      : "hover:border-primary/60 hover:text-primary";
-  return (
-    <button
-      type="button"
-      {...props}
-      className={`inline-flex min-h-11 items-center gap-2 rounded-xl border border-line bg-bg/60 px-3.5 text-sm font-medium text-fg backdrop-blur transition-colors disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:border-line disabled:hover:text-fg ${toneClass}`}
-    >
-      {children}
-    </button>
   );
 }
 
@@ -525,28 +461,6 @@ function EditorDialog({
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
-  );
-}
-
-function Field({
-  label,
-  htmlFor,
-  hint,
-  children,
-}: {
-  label: string;
-  htmlFor: string;
-  hint?: string;
-  children: ReactNode;
-}) {
-  return (
-    <div>
-      <label htmlFor={htmlFor} className="mb-1.5 block text-sm font-medium">
-        {label}
-      </label>
-      {children}
-      {hint && <p className="mt-1.5 text-xs leading-relaxed text-muted">{hint}</p>}
-    </div>
   );
 }
 

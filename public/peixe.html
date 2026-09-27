@@ -4209,6 +4209,21 @@ body {
 }
 .topbar .icon-btn:hover { border-color: rgba(70, 215, 255, .6); color: #fff; }
 .topbar .top-actions .admin-btn { display: grid !important; place-items: center; text-decoration: none; }
+
+/* Accounts (/api/me): initials avatar, unlocked plan features, profile account row */
+.avatar.has-user,
+.profile-avatar-lg.has-user {
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg, #7ff3ff, #1aa6e0);
+  color: #03131f;
+  font: 600 17px/1 var(--font);
+}
+.profile-avatar-lg.has-user { font-size: 32px; }
+.card:not(.locked) > .lock-center { display: none; }
+.profile-account { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 14px; }
+.profile-account .ghost-btn { min-height: 40px; text-decoration: none; }
+.profile-account .account-note { font-size: 13px; color: var(--muted); }
 .topbar .icon-btn.has-dot::after {
   content: "";
   position: absolute;
@@ -4741,9 +4756,9 @@ body.spots-loading #dashboardPage .scene-depths { opacity: 0; }
     <div class="section-title"><h1>Spots</h1><span class="std-badge">MAPA STD</span></div>
     <section class="feature-grid">
       <div class="card"><span class="mini-img" data-icon="🗺️" style="--img:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=320&q=70')"></span><h3>Mapa marítimo</h3><p>Profundidades, fundos e correntes para os spots principais.</p><div class="card-actions"><span class="std-badge">STD</span><button class="ghost-btn" type="button">Abrir mapa</button></div></div>
-      <div class="card locked"><span class="lock-center"><i class="ti ti-lock"></i></span><span class="mini-img" data-icon="📍" style="--img:url('https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=320&q=70')"></span><h3>Spots secretos</h3><p>Acesso exclusivo a spots de atividade alta e menor pressão.</p><div class="card-actions"><span class="pro-badge">PRO</span><button class="ghost-btn gold" type="button" data-open-plans>Desbloquear</button></div></div>
+      <div class="card locked" data-feature="secret_spots"><span class="lock-center"><i class="ti ti-lock"></i></span><span class="mini-img" data-icon="📍" style="--img:url('https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=320&q=70')"></span><h3>Spots secretos</h3><p>Acesso exclusivo a spots de atividade alta e menor pressão.</p><div class="card-actions"><span class="pro-badge">PRO</span><button class="ghost-btn gold" type="button" data-open-plans>Desbloquear</button></div></div>
       <div class="card"><h3>Comparar spots</h3><p>Oeiras, Guincho, Cascais, Carcavelos, Caparica e Sesimbra lado a lado.</p><div class="card-actions"><button class="ghost-btn" type="button">Comparar</button></div></div>
-      <div class="card locked"><span class="lock-center"><i class="ti ti-lock"></i></span><h3>Recomendador</h3><p>Escolhe automaticamente o melhor spot segundo o teu estilo de pesca.</p><div class="card-actions"><span class="pro-badge">PRO</span><button class="ghost-btn gold" type="button" data-open-plans>Experimentar</button></div></div>
+      <div class="card locked" data-feature="ai_recommendations"><span class="lock-center"><i class="ti ti-lock"></i></span><h3>Recomendador</h3><p>Escolhe automaticamente o melhor spot segundo o teu estilo de pesca.</p><div class="card-actions"><span class="pro-badge">PRO</span><button class="ghost-btn gold" type="button" data-open-plans>Experimentar</button></div></div>
     </section>
   </main>
 
@@ -4784,7 +4799,7 @@ body.spots-loading #dashboardPage .scene-depths { opacity: 0; }
     <section class="feature-grid">
       <div class="card"><h3>Diário de capturas</h3><p>Regista espécie, peso, isco, notas, foto e condições do momento.</p><button class="ghost-btn" type="button">+ Registar captura</button></div>
       <div class="card"><h3>Score de pescador</h3><p>Score evolui com consistência, capturas registadas e leitura correta das condições.</p><div class="card-actions"><button class="ghost-btn" type="button">Ver score</button></div></div>
-      <div class="card locked"><span class="lock-center"><i class="ti ti-lock"></i></span><h3>Estatísticas profundas</h3><p>Padrões por espécie, isco, lua, pressão e variação de maré.</p><div class="card-actions"><span class="pro-badge">PRO</span><button class="ghost-btn gold" type="button" data-open-plans>Desbloquear</button></div></div>
+      <div class="card locked" data-feature="deep_stats"><span class="lock-center"><i class="ti ti-lock"></i></span><h3>Estatísticas profundas</h3><p>Padrões por espécie, isco, lua, pressão e variação de maré.</p><div class="card-actions"><span class="pro-badge">PRO</span><button class="ghost-btn gold" type="button" data-open-plans>Desbloquear</button></div></div>
     </section>
   </main>
 
@@ -4795,7 +4810,7 @@ body.spots-loading #dashboardPage .scene-depths { opacity: 0; }
       <div class="card"><h3>Badges e conquistas</h3><p>Medalhas, marcos pessoais, rankings mensais e desafios com descontos em lojas parceiras.</p><div class="card-actions"><button class="ghost-btn gold" type="button">Ver progresso</button></div></div>
       <div class="card"><h3>Hub educativo</h3><p>Biblioteca comunitária com técnicas, nós, rigs e guias para evoluir a pesca.</p><div class="card-actions"><button class="ghost-btn" type="button">Aceder</button></div></div>
       <div class="card"><h3>Desafios</h3><p>Missões semanais, rankings e recompensas com descontos. Parte essencial gratuita.</p><div class="card-actions"><button class="ghost-btn gold" type="button">Participar</button></div></div>
-      <div class="card locked"><span class="lock-center"><i class="ti ti-lock"></i></span><h3>Grupos privados</h3><p>Clubes, eventos e partilhas fechadas para membros PRO.</p><div class="card-actions"><span class="pro-badge">PRO</span><button class="ghost-btn gold" type="button" data-open-plans>Ver planos</button></div></div>
+      <div class="card locked" data-feature="private_groups"><span class="lock-center"><i class="ti ti-lock"></i></span><h3>Grupos privados</h3><p>Clubes, eventos e partilhas fechadas para membros PRO.</p><div class="card-actions"><span class="pro-badge">PRO</span><button class="ghost-btn gold" type="button" data-open-plans>Ver planos</button></div></div>
     </section>
     <section class="badge-wall">
       <div class="achievement"><div class="achievement-icon">🌙</div><div><strong>Lobo do Mar Noturno</strong><span>Explorar janelas de madrugada</span></div></div>
@@ -4856,15 +4871,16 @@ body.spots-loading #dashboardPage .scene-depths { opacity: 0; }
   <main id="profilePage" class="page profile-page">
     <section class="profile-hero">
       <article class="profile-identity">
-        <div class="profile-avatar-lg"></div>
+        <div class="profile-avatar-lg" id="profileAvatar"></div>
         <div class="profile-copy">
-          <h1>Perfil do pescador</h1>
-          <p>Resumo pessoal com score, confiança, progresso competitivo e a tua Pokedex de espécies capturadas.</p>
+          <h1 id="profileName">Perfil do pescador</h1>
+          <p id="profileSubtitle">Resumo pessoal com score, confiança, progresso competitivo e a tua Pokedex de espécies capturadas.</p>
           <div class="profile-pill-row">
-            <span class="std-badge">Free</span>
+            <span class="std-badge" id="profilePlan">Free</span>
             <span class="badge"><i class="ti ti-shield-check"></i> Confiança 92%</span>
-            <span class="badge"><i class="ti ti-map-pin"></i> Cascais · Oeiras</span>
+            <span class="badge" id="profileLocation"><i class="ti ti-map-pin"></i> <span>Cascais · Oeiras</span></span>
           </div>
+          <div class="profile-account" id="profileAccount"></div>
         </div>
       </article>
       <article class="profile-score-card">
@@ -5398,6 +5414,89 @@ function syncLocation() {
   state.beach = beach.name;
   state.spot = beach.spot;
 }
+// Accounts: who is signed in and which features their plan unlocks (/api/me).
+// Guests get the Free plan; plans and toggles are managed in /admin/access.
+const FREE_FEATURES = ["dashboard", "day_hour", "tides_24h", "score_basic", "kpis", "catch_log", "gamification", "library_free"];
+const PLAN_NAMES = { free: "Free", standard: "Standard", pro: "PRO" };
+const ACCESS = { user: null, features: new Set(FREE_FEATURES) };
+function hasFeature(key) {
+  return ACCESS.features.has(key);
+}
+function proLocked(item) {
+  return item.tier === "pro" && !hasFeature("library_pro");
+}
+function initialsOf(name) {
+  return String(name || "").split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("");
+}
+function loadAccess() {
+  if (location.protocol === "file:") return;
+  fetch("/api/me", { headers: { Accept: "application/json" } })
+    .then(res => (res.ok ? res.json() : Promise.reject(new Error(`HTTP ${res.status}`))))
+    .then(data => {
+      ACCESS.user = data.user;
+      ACCESS.features = new Set(data.features || FREE_FEATURES);
+      applyAccess();
+      renderFishManual();
+    })
+    .catch(() => applyAccess());
+}
+function applyAccess() {
+  const user = ACCESS.user;
+  document.querySelectorAll(".topbar .avatar, #profileAvatar").forEach(el => {
+    el.classList.toggle("has-user", !!user);
+    el.textContent = user ? initialsOf(user.name) : "";
+  });
+  const avatar = document.querySelector(".topbar .avatar");
+  if (avatar) avatar.title = user ? `${user.name} · Perfil` : "Perfil";
+  document.querySelectorAll("[data-feature]").forEach(card => {
+    const on = hasFeature(card.dataset.feature);
+    card.classList.toggle("locked", !on);
+    const action = card.querySelector(".card-actions .ghost-btn");
+    if (!action) return;
+    action.dataset.lockedLabel = action.dataset.lockedLabel || action.textContent;
+    action.textContent = on ? "Abrir" : action.dataset.lockedLabel;
+    action.classList.toggle("gold", !on);
+    action.toggleAttribute("data-open-plans", !on);
+  });
+  const plan = user ? user.plan : "free";
+  document.querySelectorAll("#plansModal .plan-card").forEach(card => {
+    const title = card.querySelector(".plan-title").textContent.trim();
+    const btn = card.querySelector(".plan-action");
+    btn.dataset.label = btn.dataset.label || (btn.classList.contains("current") ? `Mudar para ${title}` : btn.textContent);
+    const current = title === PLAN_NAMES[plan];
+    btn.classList.toggle("current", current);
+    btn.textContent = current ? "Plano Atual" : btn.dataset.label;
+  });
+  renderAccountPanel();
+}
+function renderAccountPanel() {
+  const panel = document.getElementById("profileAccount");
+  if (!panel) return;
+  const user = ACCESS.user;
+  const name = document.getElementById("profileName");
+  const subtitle = document.getElementById("profileSubtitle");
+  const planBadge = document.getElementById("profilePlan");
+  const place = document.querySelector("#profileLocation span");
+  [name, subtitle, place].forEach(el => { if (el) el.dataset.guest = el.dataset.guest || el.textContent; });
+  if (name) name.textContent = user ? user.name : name.dataset.guest;
+  if (subtitle) subtitle.textContent = user ? (user.bio || user.email) : subtitle.dataset.guest;
+  if (planBadge) planBadge.textContent = PLAN_NAMES[user ? user.plan : "free"];
+  if (place) place.textContent = user && user.location ? user.location : place.dataset.guest;
+  const back = encodeURIComponent("/peixe.html#perfil");
+  panel.innerHTML = user
+    ? `<span class="account-note"><i class="ti ti-mail"></i> ${escHtml(user.email)}</span>
+       ${user.role === "admin" ? '<a class="ghost-btn" href="/admin"><i class="ti ti-settings"></i> Backoffice</a>' : ""}
+       <button class="ghost-btn" type="button" data-sign-out><i class="ti ti-logout"></i> Terminar sessão</button>`
+    : `<a class="ghost-btn gold" href="/login?redirect=${back}"><i class="ti ti-login"></i> Entrar</a>
+       <a class="ghost-btn" href="/login?mode=signup&redirect=${back}"><i class="ti ti-user-plus"></i> Criar conta</a>
+       <span class="account-note">Guarda capturas e desbloqueia o teu plano.</span>`;
+}
+function signOutOfApp(btn) {
+  btn.disabled = true;
+  fetch("/api/auth/sign-out", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" })
+    .then(res => { if (!res.ok) throw new Error(`HTTP ${res.status}`); location.reload(); })
+    .catch(() => { btn.disabled = false; alert("Não foi possível terminar a sessão. Tente novamente."); });
+}
 // Spots managed in the backoffice (/admin/spots). Falls back to the built-in
 // BEACH_ZONES when the API is unreachable (e.g. the file opened directly).
 function loadSpotsFromApi() {
@@ -5576,7 +5675,7 @@ function renderFishDetail(item) {
     detail.innerHTML = `<h2>Manual de espécies</h2><p class="small-muted">Escolhe uma espécie para ver o resumo.</p>`;
     return;
   }
-  const locked = item.tier === "pro";
+  const locked = proLocked(item);
   detail.innerHTML = `
     <div class="detail-tags">
       <span>${item.group}</span>
@@ -5606,7 +5705,7 @@ function renderLessons() {
       <h3>${item.title}</h3>
       <p>${item.text}</p>
       <div class="lesson-tags">${item.tags.map(tag => `<span>${tag}</span>`).join("")}</div>
-      <div class="card-actions"><button class="ghost-btn ${item.tier === "pro" ? "gold" : ""}" type="button"${item.tier === "pro" ? " data-open-plans" : ""}>${item.tier === "pro" ? "Ver planos" : "Ler"}</button></div>
+      <div class="card-actions"><button class="ghost-btn ${proLocked(item) ? "gold" : ""}" type="button"${proLocked(item) ? " data-open-plans" : ""}>${proLocked(item) ? "Ver planos" : "Ler"}</button></div>
     </article>
   `).join("");
 }
@@ -5669,7 +5768,7 @@ function renderFishDetail(item) {
     detail.innerHTML = `<h2>Biblioteca de espécies</h2><p class="small-muted">Escolhe uma espécie para ver o resumo.</p>`;
     return;
   }
-  const locked = item.tier === "pro";
+  const locked = proLocked(item);
   const visual = fishVisual(item);
   detail.innerHTML = `
     <div class="species-detail">
@@ -5731,6 +5830,8 @@ function bind() {
     const closeOverlay = e.target.closest("[data-close-overlay]");
     const toggleSonar = e.target.closest("[data-toggle-sonar]");
     const openSearch = e.target.closest("[data-open-search]");
+    const signOutBtn = e.target.closest("[data-sign-out]");
+    if (signOutBtn) { signOutOfApp(signOutBtn); return; }
     const fishCard = e.target.closest("[data-fish]");
     const fishSort = e.target.closest("[data-fish-sort]");
     const pokedexCard = e.target.closest("[data-pokedex-id]");
@@ -6034,7 +6135,8 @@ function renderDays(dayId, hourId) {
 }
 function renderKPIs() {
   const s = activeSpotData(), curve = tideCurve(state.day, tideSeed()), h = state.hour;
-  const hw = hourWeather(h, s, state.day), act = activityAt(curve, h), tide = curve[h], rising = curve[Math.min(h + 1, 24)] > tide;
+  // Same hourly rating as the fish drawn in the tide chart: tide movement minus wind/rain penalties.
+  const hw = hourWeather(h, s, state.day), act = hourConditionScore(curve, s, h), tide = curve[h], rising = curve[Math.min(h + 1, 24)] > tide;
   document.body.dataset.vibe = zoneVibe(state.zone);
   document.getElementById("heroFish").innerHTML = fish(act);
   document.getElementById("heroLabel").textContent = SCORE_LABELS[act];
@@ -6400,10 +6502,10 @@ function tideAtX(series, xOf, x) {
 function drawWaveFish(ctx, curve, heightSeries, s, xOf, yOf, PT, chartH, leftBound, rightBound) {
   const palettes = [null, "#3fb6c9", "#3fe0c5", "#5dff9e", "#5dff9e"];
   const now = performance.now ? performance.now() : Date.now();
-  const baseSize = clamp(chartH / 42, 3.4, 6.2);
+  const baseSize = clamp(chartH / 32, 4.4, 8);
   const left = leftBound ?? xOf(0);
   const right = rightBound ?? xOf(24);
-  const floorY = PT + chartH - baseSize * 3;
+  const floorY = PT + chartH - baseSize * 1.8;
   const heights = heightSeries || curve;
   for (let h = 0; h < 24; h++) {
     const q = hourConditionScore(curve, s, h);
@@ -6419,8 +6521,8 @@ function drawWaveFish(ctx, curve, heightSeries, s, xOf, yOf, PT, chartH, leftBou
       const swimY = Math.cos(now / 1100 + h * 0.4 + i * 0.9) * 1.6;
       let x = xOf(h + 0.1 + r1 * 0.8) + swimX;
       x = clamp(x, left + size * 2.5, right - size * 1.5);
-      const topLimit = yOf(tideAtX(heights, xOf, x)) + size * 2.4;
-      if (floorY - topLimit < size * 2) continue;
+      const topLimit = yOf(tideAtX(heights, xOf, x)) + size * 1.6;
+      if (floorY - topLimit < size * 1.2) continue;
       const y = clamp(topLimit + (0.25 + r2 * 0.7) * (floorY - topLimit) + swimY, topLimit, floorY);
       const color = r3 > 0.86 ? "#ffb13b" : palettes[q];
       drawMiniFish(ctx, x, y, size, color);
@@ -6535,6 +6637,8 @@ document.body.classList.add("spots-loading");
 syncLocation();
 init();
 loadSpotsFromApi();
+applyAccess();
+loadAccess();
 if (window.ResizeObserver) {
   new ResizeObserver(() => layoutSceneDepths()).observe(document.querySelector("#dashboardPage .chart-card"));
 } else {

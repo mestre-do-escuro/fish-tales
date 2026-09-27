@@ -1,10 +1,11 @@
-// Admin server functions for regions/spots. Auth is off for this app (open
-// backoffice), so rows are unowned; there is deliberately no bulk delete.
+// Admin server functions for regions/spots. Reads are public (the app shows
+// them); every change requires an active admin. There is no bulk delete.
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { getSql } from "@/lib/db";
 import { loadRegions } from "@/lib/spots-db";
 import { IMAGE_TYPES, MAX_IMAGE_BYTES, SPOT_PROFILES } from "@/lib/spots";
+import { adminMiddleware } from "@/lib/admin-auth";
 
 const name = z
   .string()
@@ -54,6 +55,7 @@ const randInt = (min: number, max: number) => Math.floor(rand(min, max + 1));
 export const listRegions = createServerFn({ method: "GET" }).handler(() => loadRegions());
 
 export const createRegion = createServerFn({ method: "POST" })
+  .middleware([adminMiddleware])
   .validator(z.object({ name, focus: focus.default(50), image: image.nullish() }))
   .handler(async ({ data }) => {
     if (data.image) assertImage(data.image);
@@ -72,6 +74,7 @@ export const createRegion = createServerFn({ method: "POST" })
   });
 
 export const updateRegion = createServerFn({ method: "POST" })
+  .middleware([adminMiddleware])
   // image: undefined = keep, null = remove, object = replace.
   .validator(z.object({ id, name, focus, image: image.nullable().optional() }))
   .handler(async ({ data }) => {
@@ -93,6 +96,7 @@ export const updateRegion = createServerFn({ method: "POST" })
   });
 
 export const deleteRegion = createServerFn({ method: "POST" })
+  .middleware([adminMiddleware])
   .validator(z.object({ id }))
   .handler(async ({ data }) => {
     const sql = await getSql();
@@ -111,6 +115,7 @@ const spotFields = {
 };
 
 export const createSpot = createServerFn({ method: "POST" })
+  .middleware([adminMiddleware])
   .validator(z.object({ ...spotFields, image: image.nullish() }))
   .handler(async ({ data }) => {
     if (data.image) assertImage(data.image);
@@ -132,6 +137,7 @@ export const createSpot = createServerFn({ method: "POST" })
   });
 
 export const updateSpot = createServerFn({ method: "POST" })
+  .middleware([adminMiddleware])
   .validator(z.object({ id, ...spotFields, image: image.nullable().optional() }))
   .handler(async ({ data }) => {
     if (data.image) assertImage(data.image);
@@ -158,6 +164,7 @@ export const updateSpot = createServerFn({ method: "POST" })
   });
 
 export const deleteSpot = createServerFn({ method: "POST" })
+  .middleware([adminMiddleware])
   .validator(z.object({ id }))
   .handler(async ({ data }) => {
     const sql = await getSql();

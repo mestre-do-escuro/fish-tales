@@ -1,8 +1,10 @@
 import type { ReactNode } from "react";
-import { Link } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+import { Link, useRouteContext } from "@tanstack/react-router";
+import { ArrowLeft, LogOut } from "lucide-react";
+import { toast } from "sonner";
+import { signOut } from "@/lib/auth/client";
 
-function WaveLogo() {
+export function WaveLogo() {
   return (
     <svg viewBox="0 0 48 40" aria-hidden="true" className="h-8 w-9 shrink-0 drop-shadow-[0_0_8px_rgb(60_200_255/0.45)]">
       <defs>
@@ -34,6 +36,8 @@ export function AdminShell({
   actions?: ReactNode;
   children: ReactNode;
 }) {
+  const { gate } = useRouteContext({ from: "/admin" });
+  const admin = gate.status === "ok" ? gate.admin : null;
   const backClass =
     "inline-flex min-h-11 items-center gap-2 rounded-xl border border-line px-3 text-sm text-muted transition-colors hover:border-primary/50 hover:text-fg";
   return (
@@ -42,19 +46,31 @@ export function AdminShell({
         <a href="/peixe.html" className="flex items-center gap-2" aria-label="O Pescador · voltar à app">
           <WaveLogo />
           <span className="leading-tight">
-            <strong className="block text-lg font-semibold italic tracking-tight">O Pescador</strong>
+            <strong className="block whitespace-nowrap text-lg font-semibold italic tracking-tight">O Pescador</strong>
             <span className="block text-[0.65rem] font-medium tracking-[0.18em] text-primary/80">BACKOFFICE</span>
           </span>
         </a>
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-2">
           {back === "app" ? (
             <a href="/peixe.html" className={backClass}>
-              <ArrowLeft className="size-4" aria-hidden /> Voltar à app
+              <ArrowLeft className="size-4" aria-hidden /> <span className="hidden sm:inline">Voltar à</span> app
             </a>
           ) : (
             <Link to="/admin" className={backClass}>
-              <ArrowLeft className="size-4" aria-hidden /> Administração
+              <ArrowLeft className="size-4" aria-hidden /> <span className="sr-only sm:not-sr-only">Administração</span>
             </Link>
+          )}
+          {admin && (
+            <button
+              type="button"
+              onClick={() => signOut("/login?redirect=%2Fadmin").catch(() => toast.error("Não foi possível terminar a sessão."))}
+              className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-line px-3 text-sm text-muted transition-colors hover:border-danger/50 hover:text-fg"
+              title={`Terminar sessão (${admin.email})`}
+            >
+              <span className="hidden max-w-40 truncate md:inline">{admin.name}</span>
+              <LogOut className="size-4" aria-hidden />
+              <span className="sr-only">Terminar sessão</span>
+            </button>
           )}
         </div>
       </header>

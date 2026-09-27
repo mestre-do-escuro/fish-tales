@@ -606,7 +606,7 @@ button { color: inherit; }
   scroll-snap-align: start;
 }
 .day-card {
-  padding: 12px 8px 13px;
+  padding: 12px 8px 12px;
   min-height: 130px;
 }
 .day-card.active {
@@ -4209,6 +4209,21 @@ body {
 }
 .topbar .icon-btn:hover { border-color: rgba(70, 215, 255, .6); color: #fff; }
 .topbar .top-actions .admin-btn { display: grid !important; place-items: center; text-decoration: none; }
+
+/* Accounts (/api/me): initials avatar, unlocked plan features, profile account row */
+.avatar.has-user,
+.profile-avatar-lg.has-user {
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg, #7ff3ff, #1aa6e0);
+  color: #03131f;
+  font: 600 17px/1 var(--font);
+}
+.profile-avatar-lg.has-user { font-size: 32px; }
+.card:not(.locked) > .lock-center { display: none; }
+.profile-account { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 14px; }
+.profile-account .ghost-btn { min-height: 40px; text-decoration: none; }
+.profile-account .account-note { font-size: 13px; color: var(--muted); }
 .topbar .icon-btn.has-dot::after {
   content: "";
   position: absolute;
@@ -4313,8 +4328,26 @@ body {
   transform: none;
   background: var(--scene-image) center var(--scene-focus, 50%) / cover no-repeat;
 }
+/* The same photo continued below the waterline, blurred (laid out by layoutSceneDepths).
+   Overhangs the card by 40px so the blur doesn't fade at the edges; clipped at the waterline. */
+#dashboardPage .scene-depths {
+  position: absolute;
+  inset: 0 -40px -40px;
+  z-index: 0;
+  pointer-events: none;
+  clip-path: inset(var(--water-top, 32%) 0 0 0);
+  filter: blur(14px) brightness(.9) saturate(1.15);
+  transition: opacity .35s ease;
+}
+#dashboardPage .scene-depths i {
+  position: absolute;
+  display: block;
+  background: var(--depths-image) center / 100% 100% no-repeat;
+}
+#dashboardPage .scene-depths i.flip { transform: scaleY(-1); }
 #dashboardPage .scene-surface::before { transition: opacity .35s ease; }
-body.spots-loading #dashboardPage .scene-surface::before { opacity: 0; }
+body.spots-loading #dashboardPage .scene-surface::before,
+body.spots-loading #dashboardPage .scene-depths { opacity: 0; }
 #dashboardPage .scene-surface::after {
   content: "";
   position: absolute;
@@ -4345,8 +4378,8 @@ body.spots-loading #dashboardPage .scene-surface::before { opacity: 0; }
 .score-panel {
   display: flex;
   align-items: center;
-  gap: 18px;
-  padding: 10px 26px 10px 10px;
+  gap: 14px;
+  padding: 10px 20px 10px 10px;
   border-radius: 16px;
   border: 1px solid rgba(110, 200, 240, .16);
   background: rgba(4, 20, 32, .6);
@@ -4354,33 +4387,46 @@ body.spots-loading #dashboardPage .scene-surface::before { opacity: 0; }
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 12px 30px rgba(0, 0, 0, .3);
 }
-.score-radar { width: 128px; height: 128px; flex: 0 0 128px; filter: drop-shadow(0 0 12px rgba(61, 255, 154, .25)); }
+.score-panel { --radar: var(--sonar-color, #18f28c); }
+.score-radar { width: 96px; height: 96px; flex: 0 0 96px; filter: drop-shadow(0 0 12px color-mix(in srgb, var(--radar) 25%, transparent)); }
+/* Radar colours follow the score (same --sonar-color as the number and bars). */
+.score-radar .rbg-in { stop-color: color-mix(in srgb, var(--radar) 18%, #06141a); }
+.score-radar .rbg-out { stop-color: color-mix(in srgb, var(--radar) 6%, #03161a); }
+.score-radar .rsw { stop-color: var(--radar); }
+.score-radar .rr-outer { stroke: color-mix(in srgb, var(--radar) 55%, transparent); }
+.score-radar .rr-ring { stroke: color-mix(in srgb, var(--radar) 28%, transparent); }
+.score-radar .rr-cross { stroke: color-mix(in srgb, var(--radar) 18%, transparent); }
+.score-radar .rr-outer, .score-radar .rr-ring, .score-radar .rr-cross { transition: stroke .3s ease; }
 .radar-sweep { transform-box: view-box; transform-origin: 60px 60px; animation: radarSpin 4s linear infinite; }
 @keyframes radarSpin { to { transform: rotate(360deg); } }
-.radar-fish .rf { fill: #4dff9f; filter: drop-shadow(0 0 3px rgba(77, 255, 159, .9)); }
+.radar-fish .rf { fill: var(--radar); filter: drop-shadow(0 0 3px var(--radar)); transition: fill .3s ease; animation: radarBlip 2.4s ease-in-out infinite; }
+/* Blips flash out of step, like echoes on a sonar screen. */
+.radar-fish .rf:nth-child(2) { animation-duration: 1.9s; animation-delay: -.7s; }
+.radar-fish .rf:nth-child(3) { animation-duration: 2.9s; animation-delay: -1.6s; }
+.radar-fish .rf:nth-child(4) { animation-duration: 2.1s; animation-delay: -.3s; }
+.radar-fish .rf:nth-child(5) { animation-duration: 3.3s; animation-delay: -2.2s; }
+.radar-fish .rf:nth-child(6) { animation-duration: 2.6s; animation-delay: -1.1s; }
+@keyframes radarBlip { 0%, 100% { opacity: 1; } 45% { opacity: 1; } 60% { opacity: .08; } 80% { opacity: .08; } }
+@media (prefers-reduced-motion: reduce) { .radar-fish .rf { animation: none; } }
 .score-panel[data-activity="0"] .rf:nth-child(n+2),
 .score-panel[data-activity="1"] .rf:nth-child(n+3),
 .score-panel[data-activity="2"] .rf:nth-child(n+4),
 .score-panel[data-activity="3"] .rf:nth-child(n+5) { display: none; }
 .score-copy { display: flex; flex-direction: column; }
-.score-panel .fish-score-line { display: flex; align-items: baseline; gap: 12px; }
+.score-panel .fish-score-line { display: flex; align-items: center; gap: 12px; }
 .score-panel .fish-score-num {
-  font: 700 58px/1 var(--font);
+  font: 700 52px/1 var(--font);
   letter-spacing: -1px;
-  background: linear-gradient(180deg, #8bffc6, #29e08a);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: none;
-  filter: drop-shadow(0 0 14px rgba(60, 255, 160, .35));
+  color: var(--sonar-color, #18f28c); /* same colour as the activity level */
+  text-shadow: 0 0 16px color-mix(in srgb, var(--sonar-color, #18f28c) 40%, transparent);
+  transition: color .3s ease;
 }
-.score-panel .fish-score-line small { font: 500 18px/1 var(--font); color: #eaf6fc; }
-.score-panel .score-bars { display: flex; gap: 3px; margin: 10px 0 12px; }
+.score-panel .fish-score-line small { max-width: 5.6em; font: 500 16px/1.2 var(--font); color: #eaf6fc; }
+.score-panel .score-bars { display: flex; gap: 3px; margin: 10px 0 2px; }
+.score-verdict { margin-top: 6px; font: 600 15px/1.1 var(--font); letter-spacing: .2px; color: var(--sonar-color, #18f28c); transition: color .3s ease; }
 .score-panel .score-bars i { width: 15px; height: 10px; border-radius: 2px; background: rgba(90, 130, 150, .3); box-shadow: none; }
-.score-panel .score-bars i.on { background: linear-gradient(180deg, #6dffb4, #1fcf7c); box-shadow: 0 0 8px rgba(70, 255, 170, .45); }
-.score-rows { display: grid; grid-template-columns: auto auto; gap: 6px 30px; margin: 0; font: 400 14px/1.2 var(--font); }
-.score-rows dt { color: #d3e5ef; }
-.score-rows dd { margin: 0; font-weight: 500; }
+.score-panel .score-bars i { transition: background-color .3s ease, box-shadow .3s ease; }
+.score-panel .score-bars i.on { background: var(--sonar-color, #18f28c); box-shadow: 0 0 8px color-mix(in srgb, var(--sonar-color, #18f28c) 55%, transparent); }
 .cond-wrap { display: flex; align-items: stretch; gap: 12px; }
 .cond-panel, .cond-toggle {
   border-radius: 14px;
@@ -4430,11 +4476,11 @@ body.spots-loading #dashboardPage .scene-surface::before { opacity: 0; }
   position: relative;
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   justify-content: flex-start;
   gap: 10px;
-  min-height: 118px;
-  padding: 16px 14px;
+  min-height: 88px;
+  padding: 12px 14px;
   overflow: hidden;
   text-align: left;
   border-radius: 14px;
@@ -4451,11 +4497,9 @@ body.spots-loading #dashboardPage .scene-surface::before { opacity: 0; }
 #dashboardPage .kpi-row .kpi::after { display: none; }
 .kpi-art { width: 60px; height: 60px; flex: 0 0 60px; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .4)); }
 .kpi-art svg { width: 100%; height: 100%; display: block; }
-.kpi-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; padding-top: 8px; }
+.kpi-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 #dashboardPage .kpi-row .kpi-v { font: 600 21px/1.1 var(--font); color: #f4fbff; white-space: nowrap; }
 #dashboardPage .kpi-row .kpi-l { font: 400 13px/1.2 var(--font); color: #b4cad8; text-transform: none; letter-spacing: 0; white-space: nowrap; }
-.kpi-spark { position: absolute; right: 12px; bottom: 10px; width: 58%; height: 34px; pointer-events: none; }
-.kpi-spark svg { width: 100%; height: 100%; display: block; }
 
 /* Bottom navigation */
 .bottom-nav {
@@ -4509,12 +4553,12 @@ body.spots-loading #dashboardPage .scene-surface::before { opacity: 0; }
   #dashboardPage .scene-surface { height: 40%; }
   #dashboardPage .scene-hud { flex-direction: column; gap: 8px; top: 10px; left: 10px; right: 10px; }
   .score-panel { gap: 12px; padding: 8px 14px 8px 8px; }
-  .score-radar { width: 72px; height: 72px; flex-basis: 72px; }
+  .score-radar { width: 60px; height: 60px; flex-basis: 60px; }
   .score-panel .fish-score-num { font-size: 36px; }
-  .score-panel .fish-score-line small { font-size: 14px; }
-  .score-panel .score-bars { margin: 6px 0 7px; }
+  .score-panel .fish-score-line small { font-size: 13px; }
+  .score-panel .score-bars { margin: 6px 0 2px; }
+  .score-verdict { margin-top: 4px; font-size: 13px; }
   .score-panel .score-bars i { width: 10px; height: 6px; }
-  .score-rows { gap: 2px 16px; font-size: 12px; }
   .cond-wrap { gap: 8px; }
   .cond-panel { padding: 6px 2px; }
   .cond { gap: 6px; padding: 2px 10px; }
@@ -4534,11 +4578,10 @@ body.spots-loading #dashboardPage .scene-surface::before { opacity: 0; }
     scrollbar-width: none;
   }
   #dashboardPage .kpi-row::-webkit-scrollbar { display: none; }
-  #dashboardPage .kpi-row .kpi { min-height: 100px; padding: 12px; scroll-snap-align: start; }
+  #dashboardPage .kpi-row .kpi { min-height: 72px; padding: 12px; scroll-snap-align: start; }
   .kpi-art { width: 44px; height: 44px; flex-basis: 44px; }
   #dashboardPage .kpi-row .kpi-v { font-size: 18px; }
   #dashboardPage .kpi-row .kpi-l { font-size: 12px; }
-  .kpi-spark { height: 28px; }
   .bottom-nav { width: calc(100% - 16px); padding: 6px; gap: 2px; }
   .nav-btn { min-height: 56px; font-size: 11px; gap: 4px; }
   .nav-btn i { font-size: 22px; }
@@ -4627,18 +4670,19 @@ body.spots-loading #dashboardPage .scene-surface::before { opacity: 0; }
 
         <section class="content-grid">
           <div class="chart-card">
+            <div class="scene-depths" aria-hidden="true"></div>
             <div class="scene-surface" aria-hidden="true"></div>
             <div class="scene-hud">
               <div class="score-panel" id="sonarCard" data-score="excellent" data-activity="4">
                 <svg class="score-radar" viewBox="0 0 120 120" aria-hidden="true">
                   <defs>
-                    <radialGradient id="radarBg" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#0c3a2e"/><stop offset="1" stop-color="#041a1c"/></radialGradient>
-                    <linearGradient id="radarSweep" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3dff9a" stop-opacity="0"/><stop offset="1" stop-color="#3dff9a" stop-opacity=".45"/></linearGradient>
+                    <radialGradient id="radarBg" cx="50%" cy="50%" r="50%"><stop class="rbg-in" offset="0"/><stop class="rbg-out" offset="1"/></radialGradient>
+                    <linearGradient id="radarSweep" x1="0" y1="0" x2="1" y2="0"><stop class="rsw" offset="0" stop-opacity="0"/><stop class="rsw" offset="1" stop-opacity=".45"/></linearGradient>
                   </defs>
-                  <circle cx="60" cy="60" r="57" fill="url(#radarBg)" stroke="rgba(61,255,154,.55)" stroke-width="1.5" stroke-dasharray="70 6 18 6"/>
-                  <circle cx="60" cy="60" r="42" fill="none" stroke="rgba(61,255,154,.28)"/>
-                  <circle cx="60" cy="60" r="26" fill="none" stroke="rgba(61,255,154,.28)"/>
-                  <path d="M60 3v114M3 60h114" stroke="rgba(61,255,154,.18)"/>
+                  <circle class="rr-outer" cx="60" cy="60" r="57" fill="url(#radarBg)" stroke-width="1.5" stroke-dasharray="70 6 18 6"/>
+                  <circle class="rr-ring" cx="60" cy="60" r="42" fill="none"/>
+                  <circle class="rr-ring" cx="60" cy="60" r="26" fill="none"/>
+                  <path class="rr-cross" d="M60 3v114M3 60h114"/>
                   <g class="radar-sweep"><path d="M60 60 L60 3 A57 57 0 0 1 109 31 Z" fill="url(#radarSweep)"/></g>
                   <g class="radar-fish">
                     <path class="rf" d="M40 28c4-3 9-3 12 0-3 3-8 3-12 0zm-2 0l-3-3v6z"/>
@@ -4652,13 +4696,10 @@ body.spots-loading #dashboardPage .scene-surface::before { opacity: 0; }
                 <div class="score-copy">
                   <div class="fish-score-line">
                     <strong class="fish-score-num" id="fishScoreNum">92</strong>
-                    <small>Fish Score</small>
+                    <small>Radar de Cardumes</small>
                   </div>
                   <span class="score-bars" id="scoreBars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
-                  <dl class="score-rows">
-                    <dt>Atividade</dt><dd id="sonarScore">Excelente</dd>
-                    <dt>Cardumes</dt><dd id="sonarSchools">Elevados</dd>
-                  </dl>
+                  <span class="score-verdict" id="scoreVerdict">Excelente</span>
                 </div>
               </div>
               <div class="cond-wrap">
@@ -4715,9 +4756,9 @@ body.spots-loading #dashboardPage .scene-surface::before { opacity: 0; }
     <div class="section-title"><h1>Spots</h1><span class="std-badge">MAPA STD</span></div>
     <section class="feature-grid">
       <div class="card"><span class="mini-img" data-icon="🗺️" style="--img:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=320&q=70')"></span><h3>Mapa marítimo</h3><p>Profundidades, fundos e correntes para os spots principais.</p><div class="card-actions"><span class="std-badge">STD</span><button class="ghost-btn" type="button">Abrir mapa</button></div></div>
-      <div class="card locked"><span class="lock-center"><i class="ti ti-lock"></i></span><span class="mini-img" data-icon="📍" style="--img:url('https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=320&q=70')"></span><h3>Spots secretos</h3><p>Acesso exclusivo a spots de atividade alta e menor pressão.</p><div class="card-actions"><span class="pro-badge">PRO</span><button class="ghost-btn gold" type="button" data-open-plans>Desbloquear</button></div></div>
+      <div class="card locked" data-feature="secret_spots"><span class="lock-center"><i class="ti ti-lock"></i></span><span class="mini-img" data-icon="📍" style="--img:url('https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=320&q=70')"></span><h3>Spots secretos</h3><p>Acesso exclusivo a spots de atividade alta e menor pressão.</p><div class="card-actions"><span class="pro-badge">PRO</span><button class="ghost-btn gold" type="button" data-open-plans>Desbloquear</button></div></div>
       <div class="card"><h3>Comparar spots</h3><p>Oeiras, Guincho, Cascais, Carcavelos, Caparica e Sesimbra lado a lado.</p><div class="card-actions"><button class="ghost-btn" type="button">Comparar</button></div></div>
-      <div class="card locked"><span class="lock-center"><i class="ti ti-lock"></i></span><h3>Recomendador</h3><p>Escolhe automaticamente o melhor spot segundo o teu estilo de pesca.</p><div class="card-actions"><span class="pro-badge">PRO</span><button class="ghost-btn gold" type="button" data-open-plans>Experimentar</button></div></div>
+      <div class="card locked" data-feature="ai_recommendations"><span class="lock-center"><i class="ti ti-lock"></i></span><h3>Recomendador</h3><p>Escolhe automaticamente o melhor spot segundo o teu estilo de pesca.</p><div class="card-actions"><span class="pro-badge">PRO</span><button class="ghost-btn gold" type="button" data-open-plans>Experimentar</button></div></div>
     </section>
   </main>
 
@@ -4758,7 +4799,7 @@ body.spots-loading #dashboardPage .scene-surface::before { opacity: 0; }
     <section class="feature-grid">
       <div class="card"><h3>Diário de capturas</h3><p>Regista espécie, peso, isco, notas, foto e condições do momento.</p><button class="ghost-btn" type="button">+ Registar captura</button></div>
       <div class="card"><h3>Score de pescador</h3><p>Score evolui com consistência, capturas registadas e leitura correta das condições.</p><div class="card-actions"><button class="ghost-btn" type="button">Ver score</button></div></div>
-      <div class="card locked"><span class="lock-center"><i class="ti ti-lock"></i></span><h3>Estatísticas profundas</h3><p>Padrões por espécie, isco, lua, pressão e variação de maré.</p><div class="card-actions"><span class="pro-badge">PRO</span><button class="ghost-btn gold" type="button" data-open-plans>Desbloquear</button></div></div>
+      <div class="card locked" data-feature="deep_stats"><span class="lock-center"><i class="ti ti-lock"></i></span><h3>Estatísticas profundas</h3><p>Padrões por espécie, isco, lua, pressão e variação de maré.</p><div class="card-actions"><span class="pro-badge">PRO</span><button class="ghost-btn gold" type="button" data-open-plans>Desbloquear</button></div></div>
     </section>
   </main>
 
@@ -4769,7 +4810,7 @@ body.spots-loading #dashboardPage .scene-surface::before { opacity: 0; }
       <div class="card"><h3>Badges e conquistas</h3><p>Medalhas, marcos pessoais, rankings mensais e desafios com descontos em lojas parceiras.</p><div class="card-actions"><button class="ghost-btn gold" type="button">Ver progresso</button></div></div>
       <div class="card"><h3>Hub educativo</h3><p>Biblioteca comunitária com técnicas, nós, rigs e guias para evoluir a pesca.</p><div class="card-actions"><button class="ghost-btn" type="button">Aceder</button></div></div>
       <div class="card"><h3>Desafios</h3><p>Missões semanais, rankings e recompensas com descontos. Parte essencial gratuita.</p><div class="card-actions"><button class="ghost-btn gold" type="button">Participar</button></div></div>
-      <div class="card locked"><span class="lock-center"><i class="ti ti-lock"></i></span><h3>Grupos privados</h3><p>Clubes, eventos e partilhas fechadas para membros PRO.</p><div class="card-actions"><span class="pro-badge">PRO</span><button class="ghost-btn gold" type="button" data-open-plans>Ver planos</button></div></div>
+      <div class="card locked" data-feature="private_groups"><span class="lock-center"><i class="ti ti-lock"></i></span><h3>Grupos privados</h3><p>Clubes, eventos e partilhas fechadas para membros PRO.</p><div class="card-actions"><span class="pro-badge">PRO</span><button class="ghost-btn gold" type="button" data-open-plans>Ver planos</button></div></div>
     </section>
     <section class="badge-wall">
       <div class="achievement"><div class="achievement-icon">🌙</div><div><strong>Lobo do Mar Noturno</strong><span>Explorar janelas de madrugada</span></div></div>
@@ -4830,15 +4871,16 @@ body.spots-loading #dashboardPage .scene-surface::before { opacity: 0; }
   <main id="profilePage" class="page profile-page">
     <section class="profile-hero">
       <article class="profile-identity">
-        <div class="profile-avatar-lg"></div>
+        <div class="profile-avatar-lg" id="profileAvatar"></div>
         <div class="profile-copy">
-          <h1>Perfil do pescador</h1>
-          <p>Resumo pessoal com score, confiança, progresso competitivo e a tua Pokedex de espécies capturadas.</p>
+          <h1 id="profileName">Perfil do pescador</h1>
+          <p id="profileSubtitle">Resumo pessoal com score, confiança, progresso competitivo e a tua Pokedex de espécies capturadas.</p>
           <div class="profile-pill-row">
-            <span class="std-badge">Free</span>
+            <span class="std-badge" id="profilePlan">Free</span>
             <span class="badge"><i class="ti ti-shield-check"></i> Confiança 92%</span>
-            <span class="badge"><i class="ti ti-map-pin"></i> Cascais · Oeiras</span>
+            <span class="badge" id="profileLocation"><i class="ti ti-map-pin"></i> <span>Cascais · Oeiras</span></span>
           </div>
+          <div class="profile-account" id="profileAccount"></div>
         </div>
       </article>
       <article class="profile-score-card">
@@ -5229,7 +5271,6 @@ function init() {
     return `<button class="kpi ${key === state.kpi ? "active" : ""}" style="--accent:${meta.color}" type="button" data-kpi="${key}">
           <span class="kpi-art" aria-hidden="true">${KPI_ART[key] || `<i class="${kpiIconClass(key)}"></i>`}</span>
           <span class="kpi-text"><span class="kpi-v" id="kv-${key}">0</span><span class="kpi-l" id="kl-${key}">${kpiShortLabel(key, meta)}</span></span>
-          <span class="kpi-spark" id="ks-${key}" aria-hidden="true"></span>
         </button>`;
   }).join("");
   document.getElementById("featureGrid").innerHTML = dashboardFeatures().join("");
@@ -5298,14 +5339,63 @@ function applySceneImage() {
   if (!scene) return;
   const beach = currentBeach();
   const url = beach.imageUrl || beach.regionImageUrl;
+  const focus = beach.imageUrl ? beach.imageFocus : beach.regionImageFocus;
   scene.classList.toggle("has-custom", !!url);
   if (url) {
     scene.style.setProperty("--scene-image", `url("${url}")`);
-    scene.style.setProperty("--scene-focus", `${beach.imageUrl ? beach.imageFocus : beach.regionImageFocus}%`);
+    scene.style.setProperty("--scene-focus", `${focus}%`);
   } else {
     scene.style.removeProperty("--scene-image");
     scene.style.removeProperty("--scene-focus");
   }
+  scene._photo = url ? { url, focus: focus ?? 50, custom: true } : { url: DEFAULT_SCENE_IMAGE, custom: false };
+  layoutSceneDepths();
+}
+const DEFAULT_SCENE_IMAGE = "/scene-cascais.jpg";
+const sceneImageSizes = new Map();
+function sceneImageSize(url) {
+  if (!sceneImageSizes.has(url)) {
+    sceneImageSizes.set(url, new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve({ w: img.naturalWidth, h: img.naturalHeight });
+      img.onerror = () => { sceneImageSizes.delete(url); reject(new Error("image")); };
+      img.src = url;
+    }));
+  }
+  return sceneImageSizes.get(url);
+}
+// Continue the waterline photo below the surface: place the image exactly where the
+// .scene-surface crop puts it, then stack mirrored copies until the card is covered.
+function layoutSceneDepths() {
+  const card = document.querySelector("#dashboardPage .chart-card");
+  const scene = card && card.querySelector(".scene-surface");
+  const depths = card && card.querySelector(".scene-depths");
+  const photo = scene && scene._photo;
+  if (!depths || !photo || !scene.offsetWidth) return;
+  sceneImageSize(photo.url).then(({ w: iw, h: ih }) => {
+    if (scene._photo !== photo) return; // spot changed while loading
+    const W = scene.offsetWidth, Hb = scene.offsetHeight, H = card.clientHeight;
+    let s, y;
+    if (photo.custom) {
+      // background: center <focus>% / cover inside the band
+      s = Math.max(W / iw, Hb / ih);
+      y = (Hb - ih * s) * photo.focus / 100;
+    } else {
+      // default: a 16:9 box bottom-aligned to the band, shifted down 36%, image cover/center
+      const boxH = W * 9 / 16, boxTop = Hb - boxH * 0.64;
+      s = Math.max(W / iw, boxH / ih);
+      y = boxTop + (boxH - ih * s) / 2;
+    }
+    const w = iw * s, h = ih * s, x = (W - w) / 2, pad = 40;
+    const tiles = [];
+    for (let top = y, i = 0; top < H + pad && i < 8; top += h, i++) {
+      if (top + h <= Hb - 2) continue; // fully above the waterline
+      tiles.push(`<i class="${i % 2 ? "flip" : ""}" style="left:${x + pad}px;top:${top}px;width:${w}px;height:${h}px"></i>`);
+    }
+    depths.style.setProperty("--depths-image", `url("${photo.url}")`);
+    depths.style.setProperty("--water-top", `${Hb}px`);
+    depths.innerHTML = tiles.join("");
+  }).catch(() => { depths.innerHTML = ""; });
 }
 const LOCATION_KEY = "o-pescador:location";
 function saveLocation() {
@@ -5324,11 +5414,98 @@ function syncLocation() {
   state.beach = beach.name;
   state.spot = beach.spot;
 }
+// Accounts: who is signed in and which features their plan unlocks (/api/me).
+// Guests get the Free plan; plans and toggles are managed in /admin/access.
+const FREE_FEATURES = ["dashboard", "day_hour", "tides_24h", "score_basic", "kpis", "catch_log", "gamification", "library_free"];
+const PLAN_NAMES = { free: "Free", standard: "Standard", pro: "PRO" };
+const ACCESS = { user: null, features: new Set(FREE_FEATURES) };
+function hasFeature(key) {
+  return ACCESS.features.has(key);
+}
+function proLocked(item) {
+  return item.tier === "pro" && !hasFeature("library_pro");
+}
+function initialsOf(name) {
+  return String(name || "").split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("");
+}
+function loadAccess() {
+  if (location.protocol === "file:") return;
+  fetch("/api/me", { headers: { Accept: "application/json" } })
+    .then(res => (res.ok ? res.json() : Promise.reject(new Error(`HTTP ${res.status}`))))
+    .then(data => {
+      ACCESS.user = data.user;
+      ACCESS.features = new Set(data.features || FREE_FEATURES);
+      applyAccess();
+      renderFishManual();
+    })
+    .catch(() => applyAccess());
+}
+function applyAccess() {
+  const user = ACCESS.user;
+  document.querySelectorAll(".topbar .avatar, #profileAvatar").forEach(el => {
+    el.classList.toggle("has-user", !!user);
+    el.textContent = user ? initialsOf(user.name) : "";
+  });
+  const avatar = document.querySelector(".topbar .avatar");
+  if (avatar) avatar.title = user ? `${user.name} · Perfil` : "Perfil";
+  document.querySelectorAll("[data-feature]").forEach(card => {
+    const on = hasFeature(card.dataset.feature);
+    card.classList.toggle("locked", !on);
+    const action = card.querySelector(".card-actions .ghost-btn");
+    if (!action) return;
+    action.dataset.lockedLabel = action.dataset.lockedLabel || action.textContent;
+    action.textContent = on ? "Abrir" : action.dataset.lockedLabel;
+    action.classList.toggle("gold", !on);
+    action.toggleAttribute("data-open-plans", !on);
+  });
+  const plan = user ? user.plan : "free";
+  document.querySelectorAll("#plansModal .plan-card").forEach(card => {
+    const title = card.querySelector(".plan-title").textContent.trim();
+    const btn = card.querySelector(".plan-action");
+    btn.dataset.label = btn.dataset.label || (btn.classList.contains("current") ? `Mudar para ${title}` : btn.textContent);
+    const current = title === PLAN_NAMES[plan];
+    btn.classList.toggle("current", current);
+    btn.textContent = current ? "Plano Atual" : btn.dataset.label;
+  });
+  renderAccountPanel();
+}
+function renderAccountPanel() {
+  const panel = document.getElementById("profileAccount");
+  if (!panel) return;
+  const user = ACCESS.user;
+  const name = document.getElementById("profileName");
+  const subtitle = document.getElementById("profileSubtitle");
+  const planBadge = document.getElementById("profilePlan");
+  const place = document.querySelector("#profileLocation span");
+  [name, subtitle, place].forEach(el => { if (el) el.dataset.guest = el.dataset.guest || el.textContent; });
+  if (name) name.textContent = user ? user.name : name.dataset.guest;
+  if (subtitle) subtitle.textContent = user ? (user.bio || user.email) : subtitle.dataset.guest;
+  if (planBadge) planBadge.textContent = PLAN_NAMES[user ? user.plan : "free"];
+  if (place) place.textContent = user && user.location ? user.location : place.dataset.guest;
+  const back = encodeURIComponent("/peixe.html#perfil");
+  panel.innerHTML = user
+    ? `<span class="account-note"><i class="ti ti-mail"></i> ${escHtml(user.email)}</span>
+       ${user.role === "admin" ? '<a class="ghost-btn" href="/admin"><i class="ti ti-settings"></i> Backoffice</a>' : ""}
+       <button class="ghost-btn" type="button" data-sign-out><i class="ti ti-logout"></i> Terminar sessão</button>`
+    : `<a class="ghost-btn gold" href="/login?redirect=${back}"><i class="ti ti-login"></i> Entrar</a>
+       <a class="ghost-btn" href="/login?mode=signup&redirect=${back}"><i class="ti ti-user-plus"></i> Criar conta</a>
+       <span class="account-note">Guarda capturas e desbloqueia o teu plano.</span>`;
+}
+function signOutOfApp(btn) {
+  btn.disabled = true;
+  fetch("/api/auth/sign-out", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" })
+    .then(res => { if (!res.ok) throw new Error(`HTTP ${res.status}`); location.reload(); })
+    .catch(() => { btn.disabled = false; alert("Não foi possível terminar a sessão. Tente novamente."); });
+}
 // Spots managed in the backoffice (/admin/spots). Falls back to the built-in
 // BEACH_ZONES when the API is unreachable (e.g. the file opened directly).
 function loadSpotsFromApi() {
   const done = () => document.body.classList.remove("spots-loading");
-  if (location.protocol === "file:") return done();
+  if (location.protocol === "file:") {
+    // Opened straight from disk: the backoffice only exists on the dev server.
+    document.querySelectorAll(".admin-btn").forEach(a => { a.href = "http://localhost:8080/admin"; });
+    return done();
+  }
   fetch("/api/spots", { headers: { Accept: "application/json" } })
     .then(res => (res.ok ? res.json() : Promise.reject(new Error(`HTTP ${res.status}`))))
     .then(({ regions }) => {
@@ -5388,50 +5565,6 @@ const KPI_ART = {
     <path d="M22 24c3 4 3 12 0 16" stroke="#0b4f66" stroke-width="1.6" fill="none" opacity=".6"/>
     <circle cx="15" cy="30" r="2.2" fill="#062a36"/></svg>`
 };
-function sparkPath(values, w, h, pad = 3) {
-  const lo = Math.min(...values), hi = Math.max(...values);
-  const span = Math.max(hi - lo, Math.abs(hi) * 0.5, 1), min = lo - (span - (hi - lo)) * 0.3;
-  const pts = values.map((v, i) => [i / (values.length - 1) * w, pad + (h - pad * 2) * (1 - (v - min) / span)]);
-  let d = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
-  for (let i = 1; i < pts.length; i++) {
-    const [px, py] = pts[i - 1], [x, y] = pts[i], cx = (px + x) / 2;
-    d += ` C${cx.toFixed(1)} ${py.toFixed(1)} ${cx.toFixed(1)} ${y.toFixed(1)} ${x.toFixed(1)} ${y.toFixed(1)}`;
-  }
-  return d;
-}
-function renderKpiSparks(s, curve, moonIllum) {
-  const W = 100, H = 34;
-  Object.keys(KPI).forEach(key => {
-    const el = document.getElementById(`ks-${key}`);
-    if (!el) return;
-    if (key === "moon") {
-      const lit = clamp(moonIllum / 100, 0, 1);
-      el.innerHTML = `<svg viewBox="0 0 100 34" preserveAspectRatio="xMaxYMid meet"><defs><radialGradient id="ksMoon" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#c9d3dc"/><stop offset="1" stop-color="#4c5a67"/></radialGradient><clipPath id="ksMoonClip"><circle cx="82" cy="17" r="16"/></clipPath></defs>
-        <circle cx="82" cy="17" r="16" fill="url(#ksMoon)"/>
-        <circle cx="${(82 - lit * 34).toFixed(1)}" cy="17" r="16" fill="#0b1824" opacity=".72" clip-path="url(#ksMoonClip)"/>
-        <g fill="#56636f" opacity=".5" clip-path="url(#ksMoonClip)"><circle cx="76" cy="12" r="2.6"/><circle cx="87" cy="22" r="3.2"/><circle cx="80" cy="25" r="1.6"/></g></svg>`;
-      return;
-    }
-    if (key === "uv") {
-      el.innerHTML = `<svg viewBox="0 0 100 34" preserveAspectRatio="none"><defs><linearGradient id="ksUv" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0f8f5a"/><stop offset=".55" stop-color="#9bd43a"/><stop offset=".8" stop-color="#ffc21f"/><stop offset="1" stop-color="#ff8a1c"/></linearGradient></defs>
-        <path d="M0 34 L100 2 L100 34 Z" fill="url(#ksUv)" opacity=".9"/></svg>`;
-      return;
-    }
-    const raw = series(key, s, state.day, curve);
-    const values = key === "tide" ? raw : raw.map((_, i) => { const win = raw.slice(Math.max(0, i - 2), i + 3); return win.reduce((a, b) => a + b, 0) / win.length; });
-    if (key === "coef") {
-      const bars = values.filter((_, i) => i % 2 === 0).slice(0, 12);
-      const min = Math.min(...bars) - 2, max = Math.max(...bars);
-      el.innerHTML = `<svg viewBox="0 0 100 34" preserveAspectRatio="none"><defs><linearGradient id="ksCoef" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4fc3ff"/><stop offset="1" stop-color="#1667b8"/></linearGradient></defs>
-        ${bars.map((v, i) => { const bh = 6 + 28 * (v - min) / (max - min || 1); return `<rect x="${(i * 8.4).toFixed(1)}" y="${(34 - bh).toFixed(1)}" width="5.4" height="${bh.toFixed(1)}" rx="1" fill="url(#ksCoef)"/>`; }).join("")}</svg>`;
-      return;
-    }
-    const line = sparkPath(values, W, H);
-    el.innerHTML = `<svg viewBox="0 0 100 34" preserveAspectRatio="none"><defs><linearGradient id="ksFill-${key}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2fc4ef" stop-opacity=".45"/><stop offset="1" stop-color="#2fc4ef" stop-opacity="0"/></linearGradient></defs>
-      <path d="${line} L100 34 L0 34 Z" fill="url(#ksFill-${key})"/>
-      <path d="${line}" fill="none" stroke="#3fd0f5" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg>`;
-  });
-}
 function kpiIconClass(key) {
   return key === "tide" ? "ti ti-wave-sine"
     : key === "temp" ? "ti ti-temperature"
@@ -5542,7 +5675,7 @@ function renderFishDetail(item) {
     detail.innerHTML = `<h2>Manual de espécies</h2><p class="small-muted">Escolhe uma espécie para ver o resumo.</p>`;
     return;
   }
-  const locked = item.tier === "pro";
+  const locked = proLocked(item);
   detail.innerHTML = `
     <div class="detail-tags">
       <span>${item.group}</span>
@@ -5572,7 +5705,7 @@ function renderLessons() {
       <h3>${item.title}</h3>
       <p>${item.text}</p>
       <div class="lesson-tags">${item.tags.map(tag => `<span>${tag}</span>`).join("")}</div>
-      <div class="card-actions"><button class="ghost-btn ${item.tier === "pro" ? "gold" : ""}" type="button"${item.tier === "pro" ? " data-open-plans" : ""}>${item.tier === "pro" ? "Ver planos" : "Ler"}</button></div>
+      <div class="card-actions"><button class="ghost-btn ${proLocked(item) ? "gold" : ""}" type="button"${proLocked(item) ? " data-open-plans" : ""}>${proLocked(item) ? "Ver planos" : "Ler"}</button></div>
     </article>
   `).join("");
 }
@@ -5635,7 +5768,7 @@ function renderFishDetail(item) {
     detail.innerHTML = `<h2>Biblioteca de espécies</h2><p class="small-muted">Escolhe uma espécie para ver o resumo.</p>`;
     return;
   }
-  const locked = item.tier === "pro";
+  const locked = proLocked(item);
   const visual = fishVisual(item);
   detail.innerHTML = `
     <div class="species-detail">
@@ -5697,6 +5830,8 @@ function bind() {
     const closeOverlay = e.target.closest("[data-close-overlay]");
     const toggleSonar = e.target.closest("[data-toggle-sonar]");
     const openSearch = e.target.closest("[data-open-search]");
+    const signOutBtn = e.target.closest("[data-sign-out]");
+    if (signOutBtn) { signOutOfApp(signOutBtn); return; }
     const fishCard = e.target.closest("[data-fish]");
     const fishSort = e.target.closest("[data-fish-sort]");
     const pokedexCard = e.target.closest("[data-pokedex-id]");
@@ -6000,7 +6135,8 @@ function renderDays(dayId, hourId) {
 }
 function renderKPIs() {
   const s = activeSpotData(), curve = tideCurve(state.day, tideSeed()), h = state.hour;
-  const hw = hourWeather(h, s, state.day), act = activityAt(curve, h), tide = curve[h], rising = curve[Math.min(h + 1, 24)] > tide;
+  // Same hourly rating as the fish drawn in the tide chart: tide movement minus wind/rain penalties.
+  const hw = hourWeather(h, s, state.day), act = hourConditionScore(curve, s, h), tide = curve[h], rising = curve[Math.min(h + 1, 24)] > tide;
   document.body.dataset.vibe = zoneVibe(state.zone);
   document.getElementById("heroFish").innerHTML = fish(act);
   document.getElementById("heroLabel").textContent = SCORE_LABELS[act];
@@ -6026,7 +6162,6 @@ function renderKPIs() {
   document.getElementById("kv-tide").textContent = `${tide.toFixed(1)} m`;
   document.getElementById("kv-wind").textContent = `${hw.wind} km/h`;
   document.getElementById("kl-wind").textContent = `Vento ${windDirPt(s.dirs[state.day])}`;
-  renderKpiSparks(s, curve, moon.illumination);
   renderChartInspector(s, curve, hw);
   const goldList = document.getElementById("goldList");
   if (goldList) {
@@ -6089,15 +6224,8 @@ function updateSonar(act, h, hw) {
     const lit = Math.round(scores[level] / 10);
     bars.querySelectorAll("i").forEach((seg, i) => seg.classList.toggle("on", i < lit));
   }
-  const sonarScoreEl = document.getElementById("sonarScore");
-  sonarScoreEl.textContent = sonar.label;
-  sonarScoreEl.style.color = sonar.color;
-  const schools = document.getElementById("sonarSchools");
-  if (schools) {
-    const est = estimateSchools(level, hourVal("coef", h, s, state.day, curve));
-    schools.textContent = est.label;
-    schools.style.color = est.color;
-  }
+  const verdict = document.getElementById("scoreVerdict");
+  if (verdict) verdict.textContent = sonar.label;
   const sonarText = document.getElementById("sonarText");
   if (sonarText) sonarText.textContent = sonar.text;
   const sonarTemp = document.getElementById("sonarTemp");
@@ -6118,14 +6246,6 @@ function updateSonar(act, h, hw) {
   }
   const sonarTideArrow = document.getElementById("sonarTideArrow");
   if (sonarTideArrow) sonarTideArrow.className = `ti ${tideInfo.rising ? "ti-arrow-up" : "ti-arrow-down"}`;
-}
-// Placeholder until the fish-school API exists: blends activity level with the fishing coefficient.
-function estimateSchools(level, coef) {
-  const score = level * 20 + clamp((coef - 84) / 20, 0, 1) * 20;
-  if (score >= 70) return { label: "Elevados", color: "#3dff9a" };
-  if (score >= 50) return { label: "Moderados", color: "#9be66f" };
-  if (score >= 30) return { label: "Reduzidos", color: "#f5b331" };
-  return { label: "Escassos", color: "#ff6f7a" };
 }
 function windDirPt(dir) {
   return { N:"N", NE:"NE", E:"E", SE:"SE", S:"S", SW:"SO", W:"O", NW:"NO" }[dir] || dir || "";
@@ -6165,31 +6285,13 @@ function renderChart(canvas) {
   const yOf = v => PT + chartH * (1 - (v - min) / (max - min));
   const font = (weight, px) => `${weight} ${px}px Poppins, system-ui, sans-serif`;
 
-  // Underwater backdrop and light rays
+  // Translucent water tint over the blurred photo (.scene-depths), deeper = darker
   const water = ctx.createLinearGradient(0, waterY, 0, H);
-  water.addColorStop(0, "#0f6283");
-  water.addColorStop(0.3, "#0a4263");
-  water.addColorStop(1, "#03162a");
+  water.addColorStop(0, "rgba(18, 105, 140, 0.32)");
+  water.addColorStop(0.4, "rgba(10, 70, 105, 0.45)");
+  water.addColorStop(1, "rgba(3, 24, 44, 0.72)");
   ctx.fillStyle = water;
   ctx.fillRect(0, waterY, W, H - waterY);
-  ctx.save();
-  ctx.globalCompositeOperation = "lighter";
-  for (let i = 0; i < 7; i++) {
-    const cx = W * (0.08 + i * 0.145) + Math.sin(now / 3200 + i) * 18;
-    const topW = 18 + seededRand(i + 4) * 30, spread = 70 + seededRand(i + 9) * 90;
-    const ray = ctx.createLinearGradient(0, waterY, 0, waterY + (H - waterY) * 0.85);
-    ray.addColorStop(0, "rgba(150, 225, 255, 0.10)");
-    ray.addColorStop(1, "rgba(150, 225, 255, 0)");
-    ctx.fillStyle = ray;
-    ctx.beginPath();
-    ctx.moveTo(cx - topW / 2, waterY);
-    ctx.lineTo(cx + topW / 2, waterY);
-    ctx.lineTo(cx + spread / 2 + 30, H * 0.95);
-    ctx.lineTo(cx - spread / 2 + 30, H * 0.95);
-    ctx.closePath();
-    ctx.fill();
-  }
-  ctx.restore();
 
   // Water surface
   ctx.save();
@@ -6220,9 +6322,9 @@ function renderChart(canvas) {
   tracePath();
   ctx.lineTo(xOf(24), PT + chartH); ctx.lineTo(PL, PT + chartH); ctx.closePath();
   const hill = ctx.createLinearGradient(0, PT, 0, PT + chartH);
-  hill.addColorStop(0, "rgba(70, 200, 240, 0.50)");
-  hill.addColorStop(0.35, "rgba(25, 125, 175, 0.38)");
-  hill.addColorStop(1, "rgba(6, 45, 75, 0.25)");
+  hill.addColorStop(0, "rgba(70, 200, 240, 0.40)");
+  hill.addColorStop(0.35, "rgba(25, 125, 175, 0.28)");
+  hill.addColorStop(1, "rgba(6, 45, 75, 0.18)");
   ctx.fillStyle = hill;
   ctx.fill();
   drawSeafloor(ctx, PL, PT, chartW, chartH, W);
@@ -6400,10 +6502,10 @@ function tideAtX(series, xOf, x) {
 function drawWaveFish(ctx, curve, heightSeries, s, xOf, yOf, PT, chartH, leftBound, rightBound) {
   const palettes = [null, "#3fb6c9", "#3fe0c5", "#5dff9e", "#5dff9e"];
   const now = performance.now ? performance.now() : Date.now();
-  const baseSize = clamp(chartH / 42, 3.4, 6.2);
+  const baseSize = clamp(chartH / 32, 4.4, 8);
   const left = leftBound ?? xOf(0);
   const right = rightBound ?? xOf(24);
-  const floorY = PT + chartH - baseSize * 3;
+  const floorY = PT + chartH - baseSize * 1.8;
   const heights = heightSeries || curve;
   for (let h = 0; h < 24; h++) {
     const q = hourConditionScore(curve, s, h);
@@ -6419,8 +6521,8 @@ function drawWaveFish(ctx, curve, heightSeries, s, xOf, yOf, PT, chartH, leftBou
       const swimY = Math.cos(now / 1100 + h * 0.4 + i * 0.9) * 1.6;
       let x = xOf(h + 0.1 + r1 * 0.8) + swimX;
       x = clamp(x, left + size * 2.5, right - size * 1.5);
-      const topLimit = yOf(tideAtX(heights, xOf, x)) + size * 2.4;
-      if (floorY - topLimit < size * 2) continue;
+      const topLimit = yOf(tideAtX(heights, xOf, x)) + size * 1.6;
+      if (floorY - topLimit < size * 1.2) continue;
       const y = clamp(topLimit + (0.25 + r2 * 0.7) * (floorY - topLimit) + swimY, topLimit, floorY);
       const color = r3 > 0.86 ? "#ffb13b" : palettes[q];
       drawMiniFish(ctx, x, y, size, color);
@@ -6443,8 +6545,8 @@ function drawSeafloor(ctx, PL, PT, chartW, chartH, W) {
     ctx.fillStyle = color;
     ctx.fill();
   };
-  rock(1, 22, "rgba(6, 34, 48, 0.75)", 18);
-  rock(5, 12, "rgba(3, 18, 28, 0.92)", 11);
+  rock(1, 22, "rgba(6, 34, 48, 0.55)", 18);
+  rock(5, 12, "rgba(3, 18, 28, 0.78)", 11);
   for (let i = 0; i < 40; i++) {
     const x = seededRand(i * 7 + 2) * W;
     const y = base - 2 - seededRand(i * 11 + 5) * 9;
@@ -6485,9 +6587,10 @@ function drawFloat(ctx, x, y, scale = 1) {
 function drawTideMarks(ctx, curve, xOf, yOf, PT, chartH) {
   const { highs, lows } = tideExtremes(curve);
   const scale = clamp(chartH / 240, 0.7, 1.1);
+  const floatScale = clamp(scale * 1.6, 1.1, 1.5);
   [...highs.map(i => [i, true]), ...lows.map(i => [i, false])].forEach(([i, isHigh]) => {
     const x = xOf(i), y = yOf(curve[i]);
-    drawFloat(ctx, x, y - 4 * scale, scale);
+    drawFloat(ctx, x, y - 4 * floatScale, floatScale);
     ctx.save();
     ctx.fillStyle = "#f4fbff";
     ctx.shadowColor = "rgba(0, 0, 0, 0.6)";
@@ -6495,7 +6598,7 @@ function drawTideMarks(ctx, curve, xOf, yOf, PT, chartH) {
     ctx.font = `600 ${Math.round(13 * scale + 1)}px Poppins, system-ui, sans-serif`;
     ctx.textAlign = "center";
     ctx.textBaseline = isHigh ? "bottom" : "top";
-    ctx.fillText(`${curve[i].toFixed(1)} m`, x, isHigh ? y - 26 * scale : y + 22 * scale);
+    ctx.fillText(`${curve[i].toFixed(1)} m`, x, isHigh ? y - 25 * floatScale : y + 18 * floatScale);
     ctx.restore();
   });
 }
@@ -6534,6 +6637,13 @@ document.body.classList.add("spots-loading");
 syncLocation();
 init();
 loadSpotsFromApi();
+applyAccess();
+loadAccess();
+if (window.ResizeObserver) {
+  new ResizeObserver(() => layoutSceneDepths()).observe(document.querySelector("#dashboardPage .chart-card"));
+} else {
+  window.addEventListener("resize", layoutSceneDepths);
+}
 </script>
 </body>
 </html>
