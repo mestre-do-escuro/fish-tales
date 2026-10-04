@@ -1,0 +1,10 @@
+FROM postgres:17-alpine
+
+ENV POSTGRES_USER=pescador \
+    POSTGRES_PASSWORD=pescador \
+    POSTGRES_DB=pescador
+
+EXPOSE 5432
+
+HEALTHCHECK --interval=5s --timeout=3s --retries=10 \
+  CMD pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" || exit 1
